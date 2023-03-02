@@ -4,6 +4,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import oslomet.testing.API.BankController;
 import oslomet.testing.DAL.BankRepository;
@@ -17,6 +18,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -104,27 +106,43 @@ public class EnhetstestBankController {
 
 
 
-    //Prøvd å gjøre noe her, usikker på hva jeg har gjort.
+    //Prøvde meg på noe her, men ANER ikke hva jeg gjør...
+
     @Test
-    public void hentTransaksjoner_loggetInn(){
-        // arrange
+    public void hentTransaksjoner(){
+
+        //arrange
+
+
         List<Konto> konti = new ArrayList<>();
         Konto konto1 = new Konto("105010123456", "01010110523",
                 720, "Lønnskonto", "NOK", null);
         konti.add(konto1);
-        List<Transaksjon> transaksjon = new ArrayList<>();
-        Transaksjon transaksjon1 = new Transaksjon(123,"01010110523",300.50,"24.02.2022","hei","avventer", "12345678901");
-        transaksjon.add(transaksjon1);
 
-        when(sjekk.loggetInn()).thenReturn("01010110523");
+        Transaksjon transaksjon1 = new Transaksjon(2,konto1.getKontonummer(),350.60,"03.03.23","test","avventer",konto1.getKontonummer());
+        Transaksjon transaksjon2 = new Transaksjon(3,konto1.getKontonummer(),800,"04.03.23","test2","avventer",konto1.getKontonummer());
 
-        when(repository.hentTransaksjoner("12345678901","23.02.2022","25.02.2022")).thenReturn(konto1);
-        // act
+        List<Transaksjon> transaksjonList = new ArrayList<>();
+        transaksjonList.add(transaksjon1);
+        transaksjonList.add(transaksjon2);
 
-        // assert
+
+
+        Mockito.when(repository.hentTransaksjoner(konto1.getKontonummer(), "02.03.23","10.03.23")).thenReturn(transaksjon1);
+
+        //act
+        List<Transaksjon> resultat = bankController.hentTransaksjoner();
+
+
+        //assert
+        assertEquals(transaksjonList, resultat);
 
     }
 
 
+
+
 }
+
+
 
