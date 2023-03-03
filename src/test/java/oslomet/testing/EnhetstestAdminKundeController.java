@@ -112,6 +112,39 @@ public class EnhetstestAdminKundeController {
         assertEquals("OK", resultat);
     }
 
+    @Test
+    public void endreKunde_endret(){
+        // arrange
+        List<Kunde> kundeliste = new ArrayList<>();
+        Kunde kunde1 = new Kunde("01010110523",
+                "Lene", "Jensen", "Askerveien 22", "3270",
+                "Asker", "22224444", "HeiHei");
+
+        kundeliste.add(kunde1);
+
+
+        when(sjekk.loggetInn()).thenReturn("01010110523");
+
+        when(repository.registrerKunde(kunde1)).thenReturn("OK");
+
+        // act
+        String resultat = adminKundeController.lagreKunde(kunde1);
+        //assert
+        assertEquals("OK", resultat);
+
+    }
+
+    @Test
+    public void endreKunde_ikkeEndret(){
+        // arrange
+        when(sjekk.loggetInn()).thenReturn(null);
+        // act
+        List<Kunde> resultat = adminKundeController.hentAlle();
+        // assert
+        assertNull(resultat);
+
+
+    }
 
 
 }
