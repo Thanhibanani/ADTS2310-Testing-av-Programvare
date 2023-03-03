@@ -70,7 +70,7 @@ public class EnhetstestBankController {
     }
 
     @Test
-    public void hentKonti_LoggetInn()  {
+    public void hentKonti_LoggetInn() {
         // arrange
         List<Konto> konti = new ArrayList<>();
         Konto konto1 = new Konto("105010123456", "01010110523",
@@ -92,7 +92,7 @@ public class EnhetstestBankController {
     }
 
     @Test
-    public void hentKonti_IkkeLoggetInn()  {
+    public void hentKonti_IkkeLoggetInn() {
         // arrange
 
         when(sjekk.loggetInn()).thenReturn(null);
@@ -105,44 +105,44 @@ public class EnhetstestBankController {
     }
 
 
-
     //Prøvde meg på noe her, men ANER ikke hva jeg gjør...
 
     @Test
-    public void hentTransaksjoner(){
+    public void hentTransaksjoner_loggetInn() {
 
         //arrange
 
-
-        List<Konto> konti = new ArrayList<>();
-        Konto konto1 = new Konto("105010123456", "01010110523",
-                720, "Lønnskonto", "NOK", null);
-        konti.add(konto1);
-
-        Transaksjon transaksjon1 = new Transaksjon(2,konto1.getKontonummer(),350.60,"03.03.23","test","avventer",konto1.getKontonummer());
-        Transaksjon transaksjon2 = new Transaksjon(3,konto1.getKontonummer(),800,"04.03.23","test2","avventer",konto1.getKontonummer());
-
+        String fra = "01.03.2023";
+        String til = "05.03.2023";
         List<Transaksjon> transaksjonList = new ArrayList<>();
+
+        Konto konto1 = new Konto("105010123456", "01010110523",
+                720, "Lønnskonto", "NOK", transaksjonList);
+
+        Transaksjon transaksjon1 = new Transaksjon(2, konto1.getKontonummer(), 350.60, "03.03.23", "test", "avventer", konto1.getKontonummer());
+        Transaksjon transaksjon2 = new Transaksjon(3, konto1.getKontonummer(), 800, "04.03.23", "test2", "avventer", konto1.getKontonummer());
+
+
         transaksjonList.add(transaksjon1);
         transaksjonList.add(transaksjon2);
 
-
-
-        Mockito.when(repository.hentTransaksjoner(konto1.getKontonummer(), "02.03.23","10.03.23")).thenReturn(transaksjon1);
+        when(repository.hentTransaksjoner(konto1.getKontonummer(), fra,til))
+                .thenReturn(new Konto(konto1.getKontonummer(), konto1.getPersonnummer(),
+                        konto1.getSaldo(), konto1.getType(), konto1.getValuta(), transaksjonList));
 
         //act
-        List<Transaksjon> resultat = bankController.hentTransaksjoner();
+        Konto resultat = bankController.hentTransaksjoner(konto1.getKontonummer(), fra, til);
 
 
         //assert
-        assertEquals(transaksjonList, resultat);
+        assertEquals(transaksjonList, ((Konto) resultat).getTransaksjoner());
+
 
     }
 
-
-
-
 }
+
+
 
 
 
