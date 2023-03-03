@@ -225,7 +225,7 @@ public class EnhetstestAdminKundeController {
         String resultat = adminKundeController.slett(kunde1.getPersonnummer());
 
         // assert
-        assertEquals(resultat, "Ikke logget inn");
+        assertEquals("Ikke logget inn",resultat);
     }
 
 
