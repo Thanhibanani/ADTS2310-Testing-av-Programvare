@@ -4,6 +4,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import oslomet.testing.API.AdminKontoController;
 import oslomet.testing.API.AdminKundeController;
@@ -19,6 +20,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -38,11 +40,8 @@ public class EnhetstestAdminKundeController {
     private Sikkerhet sjekk;
 
 
-
-
-
     @Test
-    public void hentAlle_loggetInn(){
+    public void hentAlle_loggetInn() {
 
         // arrange
 
@@ -56,8 +55,8 @@ public class EnhetstestAdminKundeController {
 
 
         Kunde kunde2 = new Kunde("11010110523",
-                    "Ole", "Nordmann", "Askerveien 21", "3210",
-                    "Asker", "22224444", "HeiHei");
+                "Ole", "Nordmann", "Askerveien 21", "3210",
+                "Asker", "22224444", "HeiHei");
 
         kundeliste.add(kunde2);
 
@@ -88,7 +87,7 @@ public class EnhetstestAdminKundeController {
 
 
     @Test
-    public void lagreKunde_loggetInn(){
+    public void lagreKunde_OK_LoggetInn() {
 
         // arrange
 
@@ -111,6 +110,48 @@ public class EnhetstestAdminKundeController {
         // assert
         assertEquals("OK", resultat);
     }
+
+
+    @Test
+    public void lagreKunde_Feil() {
+
+        // arrange
+
+        Kunde kunde1 = new Kunde("01010110523",
+                "Lene", "Jensen", "Askerveien 22", "3270",
+                "Asker", "22224444", "HeiHei");
+
+
+        when(sjekk.loggetInn()).thenReturn("01010110523");
+
+        Mockito.when(repository.registrerKunde((any(Kunde.class)))).thenReturn("Feil");
+
+        // act
+        String resultat = adminKundeController.lagreKunde(kunde1);
+
+        // assert
+        assertEquals("Feil", resultat);
+
+    }
+
+    @Test
+    public void lagreKunde_IkkeLoggetInn(){
+
+        Kunde kunde1 = new Kunde("01010110523",
+                "Lene", "Jensen", "Askerveien 22", "3270",
+                "Asker", "22224444", "HeiHei");
+
+        // arrange
+        when(sjekk.loggetInn()).thenReturn(null);
+
+        //act
+        String resultat = adminKundeController.lagreKunde(kunde1);
+
+        // assert
+        assertNull(resultat);
+    }
+
+
 
 
 
