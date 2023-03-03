@@ -112,30 +112,30 @@ public class EnhetstestBankController {
 
         //arrange
 
-        String fra = "01.03.2023";
-        String til = "05.03.2023";
+        String fra = "";
+        String til = "";
         List<Transaksjon> transaksjonList = new ArrayList<>();
 
         Konto konto1 = new Konto("105010123456", "01010110523",
                 720, "Lønnskonto", "NOK", transaksjonList);
 
-        Transaksjon transaksjon1 = new Transaksjon(2, konto1.getKontonummer(), 350.60, "03.03.23", "test", "avventer", konto1.getKontonummer());
-        Transaksjon transaksjon2 = new Transaksjon(3, konto1.getKontonummer(), 800, "04.03.23", "test2", "avventer", konto1.getKontonummer());
-
-
+        Transaksjon transaksjon1 = new Transaksjon(2, "01010110523", 350.60, "2023-02-02", "test", "0", konto1.getKontonummer());
+        Transaksjon transaksjon2 = new Transaksjon(3, "01010110523", 800, "2023-02-02", "test2", "0", konto1.getKontonummer());
         transaksjonList.add(transaksjon1);
         transaksjonList.add(transaksjon2);
 
-        when(repository.hentTransaksjoner(konto1.getKontonummer(), fra,til))
+        when(sjekk.loggetInn()).thenReturn("105010123456");
+
+        Mockito.when(repository.hentTransaksjoner(konto1.getKontonummer(), fra,til))
                 .thenReturn(new Konto(konto1.getKontonummer(), konto1.getPersonnummer(),
                         konto1.getSaldo(), konto1.getType(), konto1.getValuta(), transaksjonList));
 
         //act
-        Konto resultat = bankController.hentTransaksjoner(konto1.getKontonummer(), fra, til);
+        Konto resultat = bankController.hentTransaksjoner(konto1.getKontonummer(), "","");
 
 
         //assert
-        assertEquals(transaksjonList, ((Konto) resultat).getTransaksjoner());
+        assertEquals(transaksjonList,resultat.getTransaksjoner());
 
 
     }
