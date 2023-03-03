@@ -108,7 +108,6 @@ public class EnhetstestBankController {
 
     //Prøvde meg på noe her, men ANER ikke hva jeg gjør...
 
-    /*
     @Test
     public void hentTransaksjoner(){
 
@@ -139,7 +138,7 @@ public class EnhetstestBankController {
         assertEquals(transaksjonList, resultat);
 
     }
-*/
+
 
 
 

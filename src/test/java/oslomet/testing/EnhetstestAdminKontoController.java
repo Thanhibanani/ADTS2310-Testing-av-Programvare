@@ -140,6 +140,59 @@ public class EnhetstestAdminKontoController {
     }
 
 
+    @Test
+    public void endreKonto_Ikkeinnlogget(){
+
+        // arrange
+        List<Transaksjon> transaksjon1 = new ArrayList<>();
+        Konto konto1 = new Konto("123123123","2020202020", 300_000.50,"Driftskonto","NOK",transaksjon1);
+        when(sjekk.loggetInn()).thenReturn(null);
+
+        // act
+        String resultat = adminKontoController.endreKonto(konto1);
+
+        // assert
+        assertEquals("Ikke innlogget",resultat);
+    }
+
+    @Test
+    public void slett_LoggetInn(){
+
+        // arrange
+        List<Konto> kontoliste = new ArrayList<>();
+        List<Transaksjon> transaksjon1 = new ArrayList<>();
+
+        Konto konto1 = new Konto("123123123","2020202020", 300_000.50,"Driftskonto","NOK",transaksjon1);
+        kontoliste.add(konto1);
+
+
+        when(sjekk.loggetInn()).thenReturn("132123123");
+
+        when(repository.slettKonto(konto1.getKontonummer())).thenReturn("OK");
+
+        // act
+        String resultat = adminKontoController.slettKonto(konto1.getKontonummer());
+
+        // assert
+        assertEquals("OK", resultat);
+
+    }
+
+
+    @Test
+    public void slettKonto_Ikkeinnlogget(){
+
+        // arrange
+        List<Transaksjon> transaksjon1 = new ArrayList<>();
+        Konto konto1 = new Konto("123123123","2020202020", 300_000.50,"Driftskonto","NOK",transaksjon1);
+        when(sjekk.loggetInn()).thenReturn(null);
+
+        // act
+        String resultat = adminKontoController.slettKonto(konto1.getKontonummer());
+
+        // assert
+        assertEquals("Ikke innlogget",resultat);
+    }
 
 
 
