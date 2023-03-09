@@ -140,6 +140,31 @@ public class EnhetstestBankController {
 
     }
 
+    @Test
+    public void hentTransaksjoner_IkkeLoggetInn() {
+        // arrange
+
+        String fra = "";
+        String til = "";
+        List<Transaksjon> transaksjonList = new ArrayList<>();
+
+        Konto konto1 = new Konto("105010123456", "01010110523",
+                720, "Lønnskonto", "NOK", transaksjonList);
+
+        Transaksjon transaksjon1 = new Transaksjon(2, "01010110523", 350.60, "2023-02-02", "test", "0", konto1.getKontonummer());
+        Transaksjon transaksjon2 = new Transaksjon(3, "01010110523", 800, "2023-02-02", "test2", "0", konto1.getKontonummer());
+        transaksjonList.add(transaksjon1);
+        transaksjonList.add(transaksjon2);
+
+        when(sjekk.loggetInn()).thenReturn(null);
+
+        // act
+        Konto resultat = bankController.hentTransaksjoner(konto1.getKontonummer(), "","");
+
+        // assert
+        assertNull(resultat);
+    }
+
 }
 
 
