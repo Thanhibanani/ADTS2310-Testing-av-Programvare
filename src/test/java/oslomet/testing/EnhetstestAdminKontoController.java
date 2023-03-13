@@ -26,7 +26,7 @@ import static org.mockito.Mockito.when;
 public class EnhetstestAdminKontoController {
     @InjectMocks
     // denne skal testes
-    private AdminKontoController adminKontoController;
+    private AdminKontoController adminController;
 
     @Mock
     // denne skal Mock'es
@@ -39,37 +39,39 @@ public class EnhetstestAdminKontoController {
 
 
     @Test
-    public void hentAlleKonti_loggetInn() {
+    public void hentAlleKonti() {
 
         // arrange
-
-        List<Konto> kontoliste = new ArrayList<>();
-        List<Transaksjon> transaksjon1 = new ArrayList<>();
-
-        Konto konto1 = new Konto("123123123","2020202020", 300_000.50,"Driftskonto","NOK",transaksjon1);
-        kontoliste.add(konto1);
-
-        when(sjekk.loggetInn()).thenReturn("132123123");
-
-        when(repository.hentAlleKonti()).thenReturn(kontoliste);
+        // Oppretter en List med en konti
+        List<Transaksjon> transaksjonList = new ArrayList<>() {};
+        Konto konto1 = new Konto("98426974158", "0123.45.67890", 20_000, "Brukskonto", "NOK", transaksjonList);
+        List<Konto> kontoList =new ArrayList<>() {};
+        kontoList.add(konto1);
+        // Når metoden sjekk.loggetInn() blir kalt i hentAlleKonti(), returnerer den String
+        String personnummer = "98426974158";
+        when(sjekk.loggetInn()).thenReturn(personnummer);
+        // Når metoden repository.hentAlleKonti() blir kalt, returneres "kontoList"
+        when(repository.hentAlleKonti()).thenReturn(kontoList);
 
         // act
-        List<Konto> resultat = adminKontoController.hentAlleKonti();
+        // Kaller metoden for å bli testet og lagre resultatet
+        List<Konto> resultat = adminController.hentAlleKonti();
 
         // assert
-        assertEquals(kontoliste, resultat);
+        // Sammenligner resultatet vi fikk med det forventede resultatet for å se om testen var korrekt
+        assertEquals(resultat, kontoList);
     }
 
 
 
     @Test
-    public void hentAlleKonti_IkkeLoggetInn() {
+    public void hentAlleKontiFeil() {
         // arrange
-
+        // Når metoden sjekk.loggetInn() blir kalt vil vi ha resultatet null
         when(sjekk.loggetInn()).thenReturn(null);
 
         // act
-        List<Konto> resultat = adminKontoController.hentAlleKonti();
+        List<Konto> resultat = adminController.hentAlleKonti();
 
         // assert
         assertNull(resultat);
@@ -77,121 +79,111 @@ public class EnhetstestAdminKontoController {
 
 
     @Test
-    public void registrerKonto_LoggetInn(){
+    public void registrerKonto(){
 
         // arrange
+        // Lager en transaksjonsliste og konto
+        List<Transaksjon> transaksjonList = new ArrayList<>() {};
+        Konto konto1 = new Konto("98426974158", "0123.45.67890", 20_000, "Brukskonto", "NOK", transaksjonList);
 
-
-        List<Konto> kontoliste = new ArrayList<>();
-        List<Transaksjon> transaksjon1 = new ArrayList<>();
-
-        Konto konto1 = new Konto("123123123","2020202020", 300_000.50,"Driftskonto","NOK",transaksjon1);
-        kontoliste.add(konto1);
-
-
-        when(sjekk.loggetInn()).thenReturn("132123123");
-
-        when(repository.registrerKonto(konto1)).thenReturn("OK");
+        String personnummer = "98426974158";
+        when(sjekk.loggetInn()).thenReturn(personnummer);
+        String retur = "OK";
+        when(repository.registrerKonto(konto1)).thenReturn(retur);
 
         // act
-        String resultat = adminKontoController.registrerKonto(konto1);
+        String result = adminController.registrerKonto(konto1);
 
         // assert
-        assertEquals("OK", resultat);
+        assertEquals(retur, result);
 
     }
 
     @Test
-    public void registrerKonto_Ikkeinnlogget(){
+    public void registrerKontoFeil(){
 
         // arrange
-        List<Transaksjon> transaksjon1 = new ArrayList<>();
-        Konto konto1 = new Konto("123123123","2020202020", 300_000.50,"Driftskonto","NOK",transaksjon1);
+        List<Transaksjon> transaksjonList = new ArrayList<>() {};
+        Konto konto1 = new Konto("98426974158","0123.45.67890", 20_000,"Brukskonto","NOK", transaksjonList);
         when(sjekk.loggetInn()).thenReturn(null);
+        String retur = "Ikke innlogget";
 
         // act
-        String resultat = adminKontoController.registrerKonto(konto1);
+        String resultat = adminController.registrerKonto(konto1);
 
         // assert
-        assertEquals("Ikke innlogget",resultat);
+        assertEquals(retur, resultat);
     }
 
     @Test
-    public void endreKonto_LoggetInn(){
+    public void endreKonto(){
 
         // arrange
-        List<Konto> kontoliste = new ArrayList<>();
-        List<Transaksjon> transaksjon1 = new ArrayList<>();
+        List<Transaksjon> transaksjonList = new ArrayList<>() {};
+        Konto konto1 = new Konto("98426974158", "0123.45.67890", 20_000, "Brukskonto", "NOK", transaksjonList);
 
-        Konto konto1 = new Konto("123123123","2020202020", 300_000.50,"Driftskonto","NOK",transaksjon1);
-        kontoliste.add(konto1);
-
-
-        when(sjekk.loggetInn()).thenReturn("132123123");
-
-        when(repository.endreKonto(konto1)).thenReturn("OK");
+        String personnummer = "98426974158";
+        when(sjekk.loggetInn()).thenReturn(personnummer);
+        String retur = "OK";
+        when(repository.endreKonto(konto1)).thenReturn(retur);
 
         // act
-        String resultat = adminKontoController.endreKonto(konto1);
+        String resultat = adminController.endreKonto(konto1);
 
         // assert
-        assertEquals("OK", resultat);
+        assertEquals(retur, resultat);
 
     }
 
 
     @Test
-    public void endreKonto_Ikkeinnlogget(){
+    public void endreKontoFeil(){
 
         // arrange
-        List<Transaksjon> transaksjon1 = new ArrayList<>();
-        Konto konto1 = new Konto("123123123","2020202020", 300_000.50,"Driftskonto","NOK",transaksjon1);
+        List<Transaksjon> transaksjon1 = new ArrayList<>() {};
+        Konto konto1 = new Konto("98426974158","0123.45.67890", 20_000,"Brukskonto","NOK",transaksjon1);
         when(sjekk.loggetInn()).thenReturn(null);
+        String retur = "Ikke innlogget";
 
         // act
-        String resultat = adminKontoController.endreKonto(konto1);
+        String resultat = adminController.endreKonto(konto1);
 
         // assert
-        assertEquals("Ikke innlogget",resultat);
+        assertEquals(retur,resultat);
     }
 
     @Test
-    public void slett_LoggetInn(){
+    public void slettKonto(){
 
         // arrange
-        List<Konto> kontoliste = new ArrayList<>();
-        List<Transaksjon> transaksjon1 = new ArrayList<>();
-
-        Konto konto1 = new Konto("123123123","2020202020", 300_000.50,"Driftskonto","NOK",transaksjon1);
-        kontoliste.add(konto1);
-
-
-        when(sjekk.loggetInn()).thenReturn("132123123");
-
-        when(repository.slettKonto(konto1.getKontonummer())).thenReturn("OK");
+        String kontonummer = "0123.45.67890";
+        String personnummer = "98426974158";
+        when(sjekk.loggetInn()).thenReturn(personnummer);
+        String retur = "OK";
+        when(repository.slettKonto(kontonummer)).thenReturn(retur);
 
         // act
-        String resultat = adminKontoController.slettKonto(konto1.getKontonummer());
+        String resultat = adminController.slettKonto(kontonummer);
 
         // assert
-        assertEquals("OK", resultat);
+        assertEquals(retur, resultat);
 
     }
 
 
     @Test
-    public void slettKonto_Ikkeinnlogget(){
+    public void slettKontoFeil(){
 
         // arrange
-        List<Transaksjon> transaksjon1 = new ArrayList<>();
-        Konto konto1 = new Konto("123123123","2020202020", 300_000.50,"Driftskonto","NOK",transaksjon1);
+        String kontonummer = "0123.45.67890";
         when(sjekk.loggetInn()).thenReturn(null);
+        String retur = "Ikke innlogget";
 
         // act
-        String resultat = adminKontoController.slettKonto(konto1.getKontonummer());
+        String resultat = adminController.slettKonto(kontonummer);
 
         // assert
-        assertEquals("Ikke innlogget",resultat);
+        assertEquals(retur,resultat);
     }
 
 

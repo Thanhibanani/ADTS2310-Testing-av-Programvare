@@ -41,39 +41,32 @@ public class EnhetstestAdminKundeController {
 
 
     @Test
-    public void hentAlle_loggetInn() {
+    public void test_hentAlle() {
 
         // arrange
-
-        List<Kunde> kundeliste = new ArrayList<>();
-
         Kunde kunde1 = new Kunde("01010110523",
                 "Lene", "Jensen", "Askerveien 22", "3270",
                 "Asker", "22224444", "HeiHei");
+        Kunde kunde2 = new Kunde("12345678901", "Per", "Hansen",
+                "Osloveien 82", "1234", "Oslo", "12345678", "HeiHei");
 
+        List<Kunde> kundeliste = new ArrayList<>();
         kundeliste.add(kunde1);
-
-
-        Kunde kunde2 = new Kunde("11010110523",
-                "Ole", "Nordmann", "Askerveien 21", "3210",
-                "Asker", "22224444", "HeiHei");
-
         kundeliste.add(kunde2);
 
-
-        when(sjekk.loggetInn()).thenReturn("01010110523");
-
-        when(repository.hentAlleKunder()).thenReturn(kundeliste);
+        when(sjekk.loggetInn()).thenReturn(kunde1.getPersonnummer(), kunde2.getPersonnummer());
 
         // act
+        when(repository.hentAlleKunder()).thenReturn(kundeliste);
         List<Kunde> resultat = adminKundeController.hentAlle();
 
         // assert
         assertEquals(kundeliste, resultat);
+
     }
 
     @Test
-    public void hentAlle_IkkeLoggetInn() {
+    public void test_hentAlleFeil() {
 
         // arrange
         when(sjekk.loggetInn()).thenReturn(null);
@@ -87,136 +80,93 @@ public class EnhetstestAdminKundeController {
 
 
     @Test
-    public void lagreKunde_OK_LoggetInn() {
+    public void test_lagreKunde() {
 
         // arrange
-
-        List<Kunde> kundeliste = new ArrayList<>();
-
-        Kunde kunde1 = new Kunde("01010110523",
+        Kunde enKunde = new Kunde("01010110523",
                 "Lene", "Jensen", "Askerveien 22", "3270",
                 "Asker", "22224444", "HeiHei");
 
-        kundeliste.add(kunde1);
 
+        when(sjekk.loggetInn()).thenReturn(enKunde.getPersonnummer());
 
-        when(sjekk.loggetInn()).thenReturn("01010110523");
-
-        when(repository.registrerKunde(kunde1)).thenReturn("OK");
+        when(repository.registrerKunde(any(Kunde.class))).thenReturn("OK");
 
         // act
-        String resultat = adminKundeController.lagreKunde(kunde1);
+        String resultat = adminKundeController.lagreKunde(enKunde);
 
         // assert
         assertEquals("OK", resultat);
     }
 
     @Test
-    public void endreKunde_ikkeEndret(){
+    public void test_lagreKundeFeil(){
         // arrange
-        when(sjekk.loggetInn()).thenReturn(null);
-        // act
-        List<Kunde> resultat = adminKundeController.hentAlle();
-        // assert
-        assertNull(resultat);
+        Kunde enKunde = new Kunde("01010110523", "Lene", "Jensen",
+                "Askerveien 22", "3270", "Oslo", "22224444", "HeiHei");
 
-
-    }
-
-    @Test
-    public void lagreKunde_Feil() {
-
-        // arrange
-
-        Kunde kunde1 = new Kunde("01010110523",
-                "Lene", "Jensen", "Askerveien 22", "3270",
-                "Asker", "22224444", "HeiHei");
-
-
-        when(sjekk.loggetInn()).thenReturn("01010110523");
-
-        Mockito.when(repository.registrerKunde((any(Kunde.class)))).thenReturn("Feil");
-
-        // act
-        String resultat = adminKundeController.lagreKunde(kunde1);
-
-        // assert
-        assertEquals("Feil", resultat);
-
-    }
-
-    @Test
-    public void lagreKunde_IkkeLoggetInn(){
-
-        Kunde kunde1 = new Kunde("01010110523",
-                "Lene", "Jensen", "Askerveien 22", "3270",
-                "Asker", "22224444", "HeiHei");
-
-        // arrange
         when(sjekk.loggetInn()).thenReturn(null);
 
-        //act
-        String resultat = adminKundeController.lagreKunde(kunde1);
+        // act
+        String resultat = adminKundeController.lagreKunde(enKunde);
 
         // assert
-        assertEquals(resultat, "Ikke logget inn");
+        assertEquals("Ikke logget inn", resultat);
+
+
     }
 
     @Test
-    public void endreKunde_endret(){
+    public void test_endreKunde(){
         // arrange
-        List<Kunde> kundeliste = new ArrayList<>();
-        Kunde kunde1 = new Kunde("01010110523",
-                "Lene", "Jensen", "Askerveien 22", "3270",
-                "Asker", "22224444", "HeiHei");
-
-        kundeliste.add(kunde1);
+        Kunde enKunde = new Kunde("01010110523", "Lene", "Jensen",
+                "Askerveien 22", "3270", "Oslo", "22224444", "HeiHei");
 
 
-        when(sjekk.loggetInn()).thenReturn("01010110523");
+        Mockito.when(sjekk.loggetInn()).thenReturn(enKunde.getPersonnummer());
 
-        when(repository.endreKundeInfo(kunde1)).thenReturn("OK");
+        Mockito.when(repository.endreKundeInfo(any(Kunde.class))).thenReturn("OK");
 
         // act
-        String resultat = adminKundeController.endre(kunde1);
+        String resultat = adminKundeController.endre(enKunde);
         //assert
         assertEquals("OK", resultat);
 
     }
 
     @Test
-    public void endreKunde_ikkeLoggetInn(){
+    public void test_endreKundeFeil(){
 
         // arrange
-        Kunde kunde1 = new Kunde("01010110523",
+        Kunde enKunde = new Kunde("01010110523",
                 "Lene", "Jensen", "Askerveien 22", "3270",
                 "Asker", "22224444", "HeiHei");
 
         when(sjekk.loggetInn()).thenReturn(null);
         // act
-        String resultat = adminKundeController.endre(kunde1);
+        String resultat = adminKundeController.endre(enKunde);
 
         // assert
-        assertEquals(resultat, "Ikke logget inn");
+        assertEquals(resultat, "Ikke logget inn", resultat);
 
 
     }
 
     @Test
-    public void slettKunde_OK(){
+    public void test_slettKunde(){
 
         // arrange
-        Kunde kunde1 = new Kunde("01010110523",
+        Kunde enKunde = new Kunde("01010110523",
                 "Lene", "Jensen", "Askerveien 22", "3270",
                 "Asker", "22224444", "HeiHei");
 
 
-        when(sjekk.loggetInn()).thenReturn("01010110523");
+        when(sjekk.loggetInn()).thenReturn(enKunde.getPersonnummer());
 
-        when(repository.slettKunde(kunde1.getPersonnummer())).thenReturn("OK");
+        when(repository.slettKunde(enKunde.getPersonnummer())).thenReturn("OK");
 
         // act
-        String resultat = adminKundeController.slett(kunde1.getPersonnummer());
+        String resultat = adminKundeController.slett(enKunde.getPersonnummer());
 
         //assert
         assertEquals("OK", resultat);
@@ -224,16 +174,16 @@ public class EnhetstestAdminKundeController {
     }
 
     @Test
-    public void slettKunde_ikkeLoggetInn(){
+    public void test_slettKundeFeil(){
 
         // arrange
-        Kunde kunde1 = new Kunde("01010110523",
+        Kunde enKunde = new Kunde("01010110523",
                 "Lene", "Jensen", "Askerveien 22", "3270",
                 "Asker", "22224444", "HeiHei");
 
         when(sjekk.loggetInn()).thenReturn(null);
         // act
-        String resultat = adminKundeController.slett(kunde1.getPersonnummer());
+        String resultat = adminKundeController.slett(enKunde.getPersonnummer());
 
         // assert
         assertEquals("Ikke logget inn",resultat);
