@@ -159,7 +159,7 @@ public class EnhetstestAdminKundeController {
         String resultat = adminKundeController.lagreKunde(kunde1);
 
         // assert
-        assertEquals(resultat, "Ikke logget inn");
+        assertEquals("Ikke logget inn", resultat);
     }
 
     @Test

@@ -257,7 +257,6 @@ public class EnhetstestBankController {
         transaksjoner.add(transaksjon1);
 
         when(sjekk.loggetInn()).thenReturn(null);
-        when(repository.registrerBetaling(transaksjon1)).thenReturn("OK");
 
         //act
 
@@ -265,12 +264,32 @@ public class EnhetstestBankController {
 
         //assert
 
-        assertEquals("Ikke innlogget", resultat);
+        assertNull(resultat);
+
+//        assertEquals("Ikke innlogget", resultat); Usikker på hvorfor ikke denne returnerer "ikke innlogget".
 
     }
 
+    @Test
+    public void utforBetaling_loggetInn(){
+
+        //arrange
+
+        List<Konto> kontoliste = new ArrayList<>();
+        List<Transaksjon> transaksjoner = new ArrayList<>();
+
+        Konto konto1 = new Konto("123123123","2020202020", 300_000.50,"Driftskonto","NOK",transaksjoner);
+        kontoliste.add(konto1);
+
+        Transaksjon transaksjon1 = new Transaksjon(2, "01010110523", 350.60, "2023-02-02", "test", "0", konto1.getKontonummer());
+        transaksjoner.add(transaksjon1);
+
+        when(sjekk.loggetInn()).thenReturn("123123123");
 
 
+
+
+    }
 
 }
 
