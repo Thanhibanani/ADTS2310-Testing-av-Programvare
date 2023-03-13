@@ -265,12 +265,11 @@ public class EnhetstestBankController {
         //assert
 
         assertNull(resultat);
-
-//        assertEquals("Ikke innlogget", resultat); Usikker på hvorfor ikke denne returnerer "ikke innlogget".
+//      assertEquals("Ikke innlogget", resultat); Usikker på hvorfor ikke denne returnerer "ikke innlogget".
 
     }
 
-    @Test
+    @Test        //DENNE ER IKKE FERDIG.
     public void utforBetaling_loggetInn(){
 
         //arrange
@@ -284,12 +283,63 @@ public class EnhetstestBankController {
         Transaksjon transaksjon1 = new Transaksjon(2, "01010110523", 350.60, "2023-02-02", "test", "0", konto1.getKontonummer());
         transaksjoner.add(transaksjon1);
 
-        when(sjekk.loggetInn()).thenReturn("123123123");
+        when(sjekk.loggetInn()).thenReturn(konto1.getKontonummer());
+        when(repository.utforBetaling(transaksjon1.getTxID())).thenReturn("OK");
 
 
+        //act
 
+      //  String resultat = bankController.utforBetaling(transaksjon1.getTxID());
+
+        //assert
+
+        // assertEquals("OK", resultat);
 
     }
+
+
+    @Test
+    public void endreKundeInfo_loggetInn(){
+        // arrange
+        List<Kunde> kundeliste = new ArrayList<>();
+        Kunde kunde1 = new Kunde("01010110523",
+                "Lene", "Jensen", "Askerveien 22", "3270",
+                "Asker", "22224444", "HeiHei");
+
+        kundeliste.add(kunde1);
+
+
+        when(sjekk.loggetInn()).thenReturn("01010110523");
+
+        when(repository.endreKundeInfo(kunde1)).thenReturn("OK");
+
+        // act
+        String resultat = bankController.endre(kunde1);
+        //assert
+        assertEquals("OK", resultat);
+
+    }
+
+    @Test
+    public void endreKunde_ikkeLoggetInn(){
+
+        // arrange
+        Kunde kunde1 = new Kunde("01010110523",
+                "Lene", "Jensen", "Askerveien 22", "3270",
+                "Asker", "22224444", "HeiHei");
+
+        when(sjekk.loggetInn()).thenReturn(null);
+        // act
+        String resultat = bankController.endre(kunde1);
+
+        // assert
+        assertEquals(null, resultat);
+
+    }
+
+
+
+
 
 }
 
