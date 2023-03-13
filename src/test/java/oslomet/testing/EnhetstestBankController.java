@@ -165,9 +165,114 @@ public class EnhetstestBankController {
         assertNull(resultat);
     }
 
+
+    @Test
+    public void hentSaldi_loggetInn(){
+
+        //arrange
+        List<Transaksjon> transaksjonList = new ArrayList<>();
+
+        Konto konto1 = new Konto("105010123456", "01010110523",
+                720, "Lønnskonto", "NOK", transaksjonList);
+
+        List<Konto> kontoListe = new ArrayList<>();
+        kontoListe.add(konto1);
+
+        when(sjekk.loggetInn()).thenReturn("105010123456");
+
+        Mockito.when(repository.hentSaldi(anyString())).thenReturn(kontoListe);
+
+        //act
+        List <Konto> resultat = bankController.hentSaldi();
+
+        //assert
+        assertEquals(kontoListe, resultat);
+
+    }
+
+
+
+    @Test
+    public void hentSaldi_IkkeloggetInn() {
+
+        //arrange
+        List<Transaksjon> transaksjonList = new ArrayList<>();
+
+        Konto konto1 = new Konto("105010123456", "01010110523",
+                720, "Lønnskonto", "NOK", transaksjonList);
+
+        List<Konto> kontoListe = new ArrayList<>();
+        kontoListe.add(konto1);
+
+        when(sjekk.loggetInn()).thenReturn(null);
+
+        // act
+        List<Konto> resultat = bankController.hentSaldi();
+        // assert
+        assertNull(resultat);
+
+    }
+
+
+    @Test
+    public void registrerBetaling_loggetInn(){
+
+        //arrange
+
+        List<Konto> kontoliste = new ArrayList<>();
+        List<Transaksjon> transaksjoner = new ArrayList<>();
+
+        Konto konto1 = new Konto("123123123","2020202020", 300_000.50,"Driftskonto","NOK",transaksjoner);
+        kontoliste.add(konto1);
+
+        Transaksjon transaksjon1 = new Transaksjon(2, "01010110523", 350.60, "2023-02-02", "test", "0", konto1.getKontonummer());
+        transaksjoner.add(transaksjon1);
+
+        when(sjekk.loggetInn()).thenReturn("132123123");
+        when(repository.registrerBetaling(transaksjon1)).thenReturn("OK");
+
+        //act
+
+        String resultat = bankController.registrerBetaling(transaksjon1);
+
+        //assert
+
+        assertEquals("OK", resultat);
+
+    }
+
+
+    @Test
+    public void registrerBetaling_IkkeloggetInn(){
+
+        //arrange
+
+        List<Konto> kontoliste = new ArrayList<>();
+        List<Transaksjon> transaksjoner = new ArrayList<>();
+
+        Konto konto1 = new Konto("123123123","2020202020", 300_000.50,"Driftskonto","NOK",transaksjoner);
+        kontoliste.add(konto1);
+
+        Transaksjon transaksjon1 = new Transaksjon(2, "01010110523", 350.60, "2023-02-02", "test", "0", konto1.getKontonummer());
+        transaksjoner.add(transaksjon1);
+
+        when(sjekk.loggetInn()).thenReturn(null);
+        when(repository.registrerBetaling(transaksjon1)).thenReturn("OK");
+
+        //act
+
+        String resultat = bankController.registrerBetaling(transaksjon1);
+
+        //assert
+
+        assertEquals("Ikke innlogget", resultat);
+
+    }
+
+
+
+
 }
-
-
 
 
 
