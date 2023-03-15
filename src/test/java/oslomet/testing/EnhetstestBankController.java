@@ -269,6 +269,38 @@ public class EnhetstestBankController {
 
     }
 
+
+    @Test
+    public void hentBetalinger_loggetInn(){
+
+        //Arrange
+
+
+
+
+        //Act
+
+
+        //Assert
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
     @Test        //DENNE ER IKKE FERDIG.
     public void utforBetaling_loggetInn(){
 
@@ -296,7 +328,7 @@ public class EnhetstestBankController {
         // assertEquals("OK", resultat);
 
     }
-
+*/
 
     @Test
     public void endreKundeInfo_loggetInn(){
