@@ -43,11 +43,8 @@ public class EnhetstestSikkerhet {
         String personnummer = "01010112345";
         String passord = "test123";
 
-        HttpSession mockedSession = Mockito.mock(HttpSession.class);
-
         when(repository.sjekkLoggInn(personnummer, passord)).thenReturn("OK");
         when(session.getAttribute("Innlogget")).thenReturn(personnummer);
-
 
         // Act
         String resultat = sjekk.sjekkLoggInn(personnummer, passord);
@@ -57,22 +54,51 @@ public class EnhetstestSikkerhet {
     }
 
     @Test
-    public void sjekkLoggInn_feilPersonNr_girFeil() {
+    public void sjekkLoggInn_feilPersonnrRegex_girFeil() {
         // Arrange
         String personnummer = "A1010112345";
         String passord = "test123";
 
-
-
         when(repository.sjekkLoggInn(personnummer, passord)).thenReturn("Feil i personnummer");
         when(session.getAttribute("Innlogget")).thenReturn(personnummer);
-
 
         // Act
         String resultat = sjekk.sjekkLoggInn(personnummer, passord);
 
         // Assert
         assertEquals("Feil i personnummer", resultat);
+    }
+
+    @Test
+    public void sjekkLoggInn_feilpassordRegex_girFeil() {
+        // Arrange
+        String personnummer = "01010112345";
+        String passord = "123";
+
+        when(repository.sjekkLoggInn(personnummer, passord)).thenReturn("Feil i passord");
+        when(session.getAttribute("Innlogget")).thenReturn(personnummer);
+
+        // Act
+        String resultat = sjekk.sjekkLoggInn(personnummer, passord);
+
+        // Assert
+        assertEquals("Feil i passord", resultat);
+    }
+
+    @Test
+    public void sjekkLoggInn() {
+        // Arrange
+        String personnummer = "11111111111";
+        String passord = "12345678";
+
+        when(repository.sjekkLoggInn(personnummer, passord)).thenReturn("Ikke OK");
+
+        // Act
+        String resultat = sjekk.sjekkLoggInn(personnummer, passord);
+
+        // Assert
+        assertEquals("Feil i personnummer eller passord", resultat);
+
     }
 
 
