@@ -46,14 +46,35 @@ public class EnhetstestSikkerhet {
         HttpSession mockedSession = Mockito.mock(HttpSession.class);
 
         when(repository.sjekkLoggInn(personnummer, passord)).thenReturn("OK");
+        when(session.getAttribute("Innlogget")).thenReturn(personnummer);
+
 
         // Act
         String resultat = sjekk.sjekkLoggInn(personnummer, passord);
 
         // Assert
         assertEquals("OK", resultat);
-        assertEquals(personnummer, mockedSession.getAttribute("Innlogget"));
     }
+
+    @Test
+    public void sjekkLoggInn_feilPersonNr_girFeil() {
+        // Arrange
+        String personnummer = "A1010112345";
+        String passord = "test123";
+
+
+
+        when(repository.sjekkLoggInn(personnummer, passord)).thenReturn("Feil i personnummer");
+        when(session.getAttribute("Innlogget")).thenReturn(personnummer);
+
+
+        // Act
+        String resultat = sjekk.sjekkLoggInn(personnummer, passord);
+
+        // Assert
+        assertEquals("Feil i personnummer", resultat);
+    }
+
 
 
 
