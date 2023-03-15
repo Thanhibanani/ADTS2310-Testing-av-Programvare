@@ -23,6 +23,8 @@ public class BankController {
     @Autowired
     Sikkerhet sjekk;
 
+
+
     @GetMapping("/hentTransaksjoner")
     public Konto hentTransaksjoner(String kontoNr, String fraDato, String tilDato) {
          String personnummer = sjekk.loggetInn();

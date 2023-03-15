@@ -39,6 +39,8 @@ public class EnhetstestBankController {
     // denne skal Mock'es
     private Sikkerhet sjekk;
 
+
+
     @Test
     public void hentKundeInfo_loggetInn() {
 
