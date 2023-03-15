@@ -15,8 +15,10 @@ import javax.servlet.http.HttpSession;
 
 import static net.bytebuddy.matcher.ElementMatchers.any;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 
@@ -99,6 +101,75 @@ public class EnhetstestSikkerhet {
         // Assert
         assertEquals("Feil i personnummer eller passord", resultat);
 
+    }
+
+    @Test
+    public void testLoggUt() {
+        // Arrange
+        when(session.getAttribute("Innlogget")).thenReturn("AltAnnetEnnInnlogget");
+
+        // Act
+        sjekk.loggUt();
+
+        // Assert
+        verify(session).setAttribute("Innlogget", null);
+    }
+
+
+    @Test
+    public void adminInnlogging_OK() {
+        // Arrange
+        String bruker = "Admin";
+        String passord = "Admin";
+
+        // Act
+        String resultat = sjekk.loggInnAdmin(bruker, passord);
+
+        // Assert
+        assertEquals("Logget inn", resultat);
+        verify(session).setAttribute("Innlogget", "Admin");
+    }
+
+    @Test
+    public void adminInnlogging_Feil() {
+        // Arrange
+        String bruker = "Imposter";
+        String passord = "I_Am_The_Imposter";
+
+        // Act
+        String resultat = sjekk.loggInnAdmin(bruker, passord);
+
+        // Assert
+        assertEquals("Ikke logget inn", resultat);
+        verify(session).setAttribute("Innlogget", null);
+    }
+
+
+
+    //Litt usikker på hvorfor/hvordan denne skulle testes
+    @Test
+    public void loggetInnIgjen() {
+        // Arrange
+        when(session.getAttribute("Innlogget")).thenReturn("Imposter");
+        String forventetResultat = "Imposter";
+
+        // Act
+        String resultat = sjekk.loggetInn();
+
+        // Assert
+        assertEquals(forventetResultat, resultat);
+    }
+
+    @Test
+    public void loggetInn_Feil() {
+        // Arrange
+        when(session.getAttribute("Innlogget")).thenReturn(null);
+
+        // Act
+        String resultat = sjekk.loggetInn();
+
+        // Assert
+        assertNull(resultat);
     }
 
 
