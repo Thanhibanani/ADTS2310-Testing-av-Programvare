@@ -54,6 +54,8 @@ public class AdminKontoController {
         }
         return "Ikke innlogget";
     }
+
+
     @Autowired
     private DataSource dataSource;
     @GetMapping("/initDB")

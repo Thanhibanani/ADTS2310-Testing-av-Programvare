@@ -14,12 +14,13 @@ import oslomet.testing.Models.Transaksjon;
 import oslomet.testing.Sikkerhet.Sikkerhet;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -299,36 +300,64 @@ public class EnhetstestBankController {
     }
 
 
+    @Test
+    public void hentBetalinger_IkkeloggetInn(){
 
-/*
-    @Test        //DENNE ER IKKE FERDIG.
-    public void utforBetaling_loggetInn(){
+        //Arrange
+        List<Transaksjon> transaksjonList = new ArrayList<>();
 
-        //arrange
+        Konto konto1 = new Konto("105010123456", "01010110523",
+                720, "Lønnskonto", "NOK", transaksjonList);
 
-        List<Konto> kontoliste = new ArrayList<>();
-        List<Transaksjon> transaksjoner = new ArrayList<>();
-
-        Konto konto1 = new Konto("123123123","2020202020", 300_000.50,"Driftskonto","NOK",transaksjoner);
-        kontoliste.add(konto1);
-
-        Transaksjon transaksjon1 = new Transaksjon(2, "01010110523", 350.60, "2023-02-02", "test", "0", konto1.getKontonummer());
-        transaksjoner.add(transaksjon1);
-
-        when(sjekk.loggetInn()).thenReturn(konto1.getKontonummer());
-        when(repository.utforBetaling(transaksjon1.getTxID())).thenReturn("OK");
+        List<Konto> kontoListe = new ArrayList<>();
+        kontoListe.add(konto1);
 
 
-        //act
+        when(sjekk.loggetInn()).thenReturn(null);
 
-      //  String resultat = bankController.utforBetaling(transaksjon1.getTxID());
 
-        //assert
+        //Act
 
-        // assertEquals("OK", resultat);
+        List <Transaksjon> resultat = bankController.hentBetalinger();
+
+        //Assert
+
+        assertNull(resultat);
 
     }
-*/
+
+
+
+    @Test
+    public void utforBetaling_loggetInn() {
+        // arrange
+        String personnummer = "12345678901";
+        int txID = 1;
+
+        Transaksjon transaksjon = new Transaksjon(txID, "12345678901", 100000.0, "2023-03-12", "Testing av Utførtbetlinger", "1", "1234567");
+
+        List<Transaksjon> betalinger = new ArrayList<>();
+        betalinger.add(transaksjon);
+
+        Konto konto1 = new Konto("105010123456", "01010110523",
+                720, "Lønnskonto", "NOK", betalinger);
+
+        List<Konto> kontoListe = new ArrayList<>();
+        kontoListe.add(konto1);
+
+
+        when(sjekk.loggetInn()).thenReturn("01010110523");
+        when(repository.utforBetaling(txID)).thenReturn("OK");
+        when(repository.hentBetalinger(personnummer)).thenReturn(new ArrayList<>());
+
+        // act
+        List<Transaksjon> resultat = bankController.utforBetaling(txID);
+
+        //assert
+        assertTrue(resultat.contains(transaksjon));
+    }
+
+
 
     @Test
     public void endreKundeInfo_loggetInn(){
