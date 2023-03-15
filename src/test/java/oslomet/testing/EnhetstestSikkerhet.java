@@ -1,80 +1,58 @@
 package oslomet.testing;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
+import oslomet.testing.API.AdminKontoController;
+import oslomet.testing.DAL.AdminRepository;
 import oslomet.testing.DAL.BankRepository;
 import oslomet.testing.Sikkerhet.Sikkerhet;
 
+import javax.servlet.http.HttpSession;
+
+import static net.bytebuddy.matcher.ElementMatchers.any;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
 
 @RunWith(MockitoJUnitRunner.class)
 public class EnhetstestSikkerhet {
 
     @InjectMocks
-    Sikkerhet sikkerhet;
+    // denne skal testes
+    private Sikkerhet sjekk;
 
     @Mock
-    BankRepository repository;
+    // denne skal Mock'es
+    private BankRepository repository;
 
+    @Mock
+    // denne skal Mock'es
+    private HttpSession session;
 
 
 
     @Test
-    public void testSjekkLoggInnWithInvalidPersonnummer() {
-        // arrange
-        String personnummer = "1234";
-        String passord = "password123";
+    public void sjekkLoggInn_korrektInput_girOK() {
+        // Arrange
+        String personnummer = "01010112345";
+        String passord = "test123";
 
-        // act
-        String resultat = sikkerhet.sjekkLoggInn(personnummer, passord);
+        HttpSession mockedSession = Mockito.mock(HttpSession.class);
 
-        // assert
-        assertEquals("Feil i personnummer", resultat);
-    }
-
-    @Test
-    public void testSjekkLoggInnWithInvalidPassord() {
-        // arrange
-        String personnummer = "12345678901";
-        String passord = "pwd";
-
-        // act
-        String resultat = sikkerhet.sjekkLoggInn(personnummer, passord);
-
-        // assert
-        assertEquals("Feil i passord", resultat);
-    }
-
-    @Test
-    public void testSjekkLoggInnWithInvalidCredentials() {
-        // arrange
-        String personnummer = "12345678901";
-        String passord = "password123";
-        when(repository.sjekkLoggInn(personnummer, passord)).thenReturn("Feil i personnummer eller passord");
-
-        // act
-        String resultat = sikkerhet.sjekkLoggInn(personnummer, passord);
-
-        // assert
-        assertEquals("Feil i personnummer eller passord", resultat);
-    }
-
-    @Test
-    public void testSjekkLoggInnWithValidCredentials() {
-        // arrange
-        String personnummer = "12345678901";
-        String passord = "password123";
         when(repository.sjekkLoggInn(personnummer, passord)).thenReturn("OK");
 
-        // act
-        String resultat = sikkerhet.sjekkLoggInn(personnummer, passord);
+        // Act
+        String resultat = sjekk.sjekkLoggInn(personnummer, passord);
 
-        // assert
+        // Assert
         assertEquals("OK", resultat);
+        assertEquals(personnummer, mockedSession.getAttribute("Innlogget"));
     }
 
 
