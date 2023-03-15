@@ -1,5 +1,6 @@
 package oslomet.testing;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -331,10 +332,8 @@ public class EnhetstestBankController {
     @Test
     public void utforBetaling_loggetInn() {
         // arrange
-        String personnummer = "12345678901";
-        int txID = 1;
 
-        Transaksjon transaksjon = new Transaksjon(txID, "12345678901", 100000.0, "2023-03-12", "Testing av Utførtbetlinger", "1", "1234567");
+        Transaksjon transaksjon = new Transaksjon(1, "12345678901", 100000.0, "2023-03-12", "Testing av Utførtbetlinger", "1", "1234567");
 
         List<Transaksjon> betalinger = new ArrayList<>();
         betalinger.add(transaksjon);
@@ -347,15 +346,32 @@ public class EnhetstestBankController {
 
 
         when(sjekk.loggetInn()).thenReturn("01010110523");
-        when(repository.utforBetaling(txID)).thenReturn("OK");
-        when(repository.hentBetalinger(personnummer)).thenReturn(new ArrayList<>());
+        when(repository.utforBetaling(transaksjon.getTxID())).thenReturn("OK");
+        Mockito.when(repository.hentBetalinger(anyString())).thenReturn(betalinger);
 
         // act
-        List<Transaksjon> resultat = bankController.utforBetaling(txID);
+        List<Transaksjon> resultat = bankController.utforBetaling(transaksjon.getTxID());
 
         //assert
-        assertTrue(resultat.contains(transaksjon));
+        assertEquals(betalinger, resultat);
     }
+
+
+
+    @Test
+    public void utforBetaling_ikkeLoggetInn() {
+        // arrange
+        Transaksjon transaksjon = new Transaksjon(1, "12345678901", 100000.0, "2023-03-12", "Testing av Utførtbetlinger", "1", "1234567");
+
+        when(sjekk.loggetInn()).thenReturn(null);
+
+        // act
+        List<Transaksjon> resultat = bankController.utforBetaling(transaksjon.getTxID());
+
+        //assert
+        assertNull(resultat);
+    }
+
 
 
 
@@ -397,10 +413,6 @@ public class EnhetstestBankController {
         assertEquals(null, resultat);
 
     }
-
-
-
-
 
 }
 
