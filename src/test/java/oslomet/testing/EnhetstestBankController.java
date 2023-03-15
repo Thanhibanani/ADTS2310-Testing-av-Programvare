@@ -274,29 +274,29 @@ public class EnhetstestBankController {
     public void hentBetalinger_loggetInn(){
 
         //Arrange
+        List<Transaksjon> transaksjonList = new ArrayList<>();
+
+        Konto konto1 = new Konto("105010123456", "01010110523",
+                720, "Lønnskonto", "NOK", transaksjonList);
+
+        List<Konto> kontoListe = new ArrayList<>();
+        kontoListe.add(konto1);
 
 
 
+        when(sjekk.loggetInn()).thenReturn("105010123456");
+        Mockito.when(repository.hentBetalinger(anyString())).thenReturn(transaksjonList);
 
         //Act
+
+        List <Transaksjon> resultat = bankController.hentBetalinger();
 
 
         //Assert
 
+        assertEquals(transaksjonList, resultat);
+
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
